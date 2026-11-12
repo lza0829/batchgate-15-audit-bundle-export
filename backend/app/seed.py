@@ -40,6 +40,18 @@ def init_db():
             artifact_rows INTEGER NOT NULL DEFAULT 0,
             updated_at TEXT
         );
+        CREATE TABLE IF NOT EXISTS audit_exports(
+            id INTEGER PRIMARY KEY,
+            orchestration_id INTEGER NOT NULL,
+            version INTEGER NOT NULL,
+            package_path TEXT NOT NULL,
+            package_bytes INTEGER NOT NULL,
+            package_sha256 TEXT NOT NULL,
+            manifest_sha256 TEXT NOT NULL,
+            manifest_json TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            UNIQUE(orchestration_id, version)
+        );
         """
     )
     if conn.execute("SELECT COUNT(*) c FROM jobs").fetchone()["c"] == 0:

@@ -29,6 +29,14 @@ docker compose up --build
 
 Python 3.12 + FastAPI + SQLite；Vue 3 + Vite + Nginx。
 
+## 审计包导出
+
+编排完成后可在编排台对指定编排导出审计包（zip，落盘于 `DATA_DIR/audit_exports/`，容器内即 `/data` 卷）：
+
+- 包内容与库内记录同源：`report_summary.json`（报告摘要）、`attempts.csv` + `attempts/attempt_*.json`（每条尝试的状态、原因与证据，含 skipped_dep / failed）、`dependencies/`（作业依赖快照）、`manifest.json`（文件名、字节数、SHA-256）。
+- 每次导出生成一条 `audit_exports` 记录（同编排版本号递增），同一版本可重复下载、字节与哈希不变；整包 SHA-256 随记录落库。
+- 构建时与独立脚本均可核对：`python -I backend/scripts/verify_audit_bundle.py <bundle.zip>` 校验清单哈希、尝试行与证据、报告成功/失败/跳过口径一致。
+
 ## 0-1 切口（未实现）
 
 `dep_gate` / `retry_budget` / `watermark_reconcile` / `sla_breach`
